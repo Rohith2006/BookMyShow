@@ -14,7 +14,7 @@ import {
 import { Link } from "react-router-dom";
 import { setUser } from "../redux/userSlice";
 
-function ProtectedRoute({ children }) {
+function ProtectedRoute({ children , requiredRole}) {
   const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -23,6 +23,15 @@ function ProtectedRoute({ children }) {
     {
       label: "Home",
       icon: <HomeOutlined />,
+      onClick: () => {
+        if (user.role === 'admin') {
+          navigate("/admin");
+        } else if (user.role === 'partner') {
+          navigate("/partner");
+        } else {
+          navigate("/");
+        }
+      }
     },
 
     {
@@ -86,6 +95,21 @@ function ProtectedRoute({ children }) {
       navigate("/login");
     }
   }, []);
+
+  useEffect(() => {
+    if (user && requiredRole && user.role !== requiredRole) {
+      message.error("Access Denied");
+      if (user.role === 'admin') {
+        navigate("/admin");
+      }
+      else if (user.role === 'partner') {
+        navigate("/partner");
+      }
+      else {
+        navigate("/");
+      }
+    }
+  }, [user, requiredRole]);
 
   return (
     user && (

@@ -193,6 +193,33 @@ router.patch("/resetpassword", async function (req, res) {
     })
   }
 
+  router.get("/admin", authMiddleware, adminMiddleware, async (req, res) => {
+    try {
+      // Only admin users can access this route
+      return res.status(200).json({
+        success: true,
+        message: 'Admin access granted!',
+      });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ success: false, message: "Server Error" });
+    }
+  });
+  
+  
+  router.get("/partner", authMiddleware, partnerMiddleware, async (req, res) => {
+    try {
+      // Only partner users can access this route
+      return res.status(200).json({
+        success: true,
+        message: 'Partner access granted!',
+      });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ success: false, message: "Server Error" });
+    }
+  }); 
+  
 
 })
 
